@@ -1,8 +1,15 @@
 type: vertical-stack
 cards:
+  # =================================================
+  # EN-TÊTE : TITRE
+  # =================================================
   - type: custom:mushroom-title-card
     title: PoolMaster
     alignment: center
+
+  # =================================================
+  # ZONE 1 : JAUGES CHIMIE
+  # =================================================
   - type: horizontal-stack
     cards:
       - type: gauge
@@ -40,6 +47,10 @@ cards:
             color: "#ffa600"
           - from: 790
             color: "#db4437"
+
+  # =================================================
+  # ZONE 2 : COMMANDES PRINCIPALES (Boutons d'action)
+  # =================================================
   - type: grid
     columns: 4
     square: false
@@ -84,6 +95,11 @@ cards:
         card_mod:
           style: |
             ha-card { background: none; box-shadow: none; border: none; }
+
+  # =================================================
+  # ZONE 3 : MODE FILTRATION & INDICATEURS CHIMIE
+  # =================================================
+  # --- Sélecteur Mode Filtration ---
   - type: custom:mushroom-template-card
     entity: switch.poolmaster_filtration_mode_auto_manual
     primary: Mode Filtration
@@ -109,6 +125,8 @@ cards:
       {% endif %}
     vertical: true
     features_position: bottom
+
+  # --- Indicateurs PID (Feux tricolores) & Pompes animées ---
   - type: grid
     columns: 4
     square: false
@@ -135,8 +153,7 @@ cards:
             green
           {% endif %}
         badge_icon: >
-          {% if is_state('switch.poolmaster_orp_pid', 'on') and
-          is_state('switch.poolmaster_orp_auto_mode', 'off') %}
+          {% if is_state('switch.poolmaster_orp_pid', 'on') and is_state('switch.poolmaster_orp_auto_mode', 'off') %}
             mdi:lock
           {% endif %}
         badge_color: orange
@@ -148,8 +165,8 @@ cards:
           action: none
         card_mod:
           style: >
-            ha-card { background: none; border: none; box-shadow: none; cursor:
-            default; }
+            ha-card { background: none; border: none; box-shadow: none; cursor: default; }
+
       - type: custom:mushroom-template-card
         entity: switch.poolmaster_chl_pump
         primary: Inj. Chl
@@ -165,16 +182,14 @@ cards:
           action: none
         card_mod:
           style: >
-            ha-card { background: none; border: none; box-shadow: none; cursor:
-            default; }
-
+            ha-card { background: none; border: none; box-shadow: none; cursor: default; }
             mushroom-shape-icon {
               {{ 'animation: spin 2s linear infinite;' if is_state(config.entity, 'on') }}
             }
-
             @keyframes spin {
               100% { transform: rotate(360deg); }
             }
+
       - type: custom:mushroom-template-card
         entity: switch.poolmaster_ph_pid
         primary: Reg. pH
@@ -197,8 +212,7 @@ cards:
             green
           {% endif %}
         badge_icon: >
-          {% if is_state('switch.poolmaster_ph_pid', 'on') and
-          is_state('switch.poolmaster_ph_auto_mode', 'off') %}
+          {% if is_state('switch.poolmaster_ph_pid', 'on') and is_state('switch.poolmaster_ph_auto_mode', 'off') %}
             mdi:lock
           {% endif %}
         badge_color: orange
@@ -210,8 +224,8 @@ cards:
           action: none
         card_mod:
           style: >
-            ha-card { background: none; border: none; box-shadow: none; cursor:
-            default; }
+            ha-card { background: none; border: none; box-shadow: none; cursor: default; }
+
       - type: custom:mushroom-template-card
         entity: switch.poolmaster_ph_pump
         primary: Inj. pH
@@ -227,16 +241,17 @@ cards:
           action: none
         card_mod:
           style: >
-            ha-card { background: none; border: none; box-shadow: none; cursor:
-            default; }
-
+            ha-card { background: none; border: none; box-shadow: none; cursor: default; }
             mushroom-shape-icon {
               {{ 'animation: spin 2s linear infinite;' if is_state(config.entity, 'on') }}
             }
-
             @keyframes spin {
               100% { transform: rotate(360deg); }
             }
+
+  # =================================================
+  # ZONE 4 : GRAPHIQUES ET TENDANCES
+  # =================================================
   - type: custom:mini-graph-card
     name: Températures
     hours_to_show: 6
@@ -262,6 +277,7 @@ cards:
         name: Eau
         color: "#2196f3"
         show_state: true
+
   - type: custom:mini-graph-card
     name: Chimie
     hours_to_show: 6
@@ -286,6 +302,7 @@ cards:
         color: "#2196f3"
         show_state: true
         y_axis: secondary
+
   - type: history-graph
     hours_to_show: 6
     entities:
@@ -303,6 +320,10 @@ cards:
         }
         .card-header { display: none !important; }
         .content { padding-top: 5px !important; }
+
+  # =================================================
+  # ZONE 5 : SUIVI DES CONSOMMABLES (Calcul mL/L)
+  # =================================================
   - type: grid
     columns: 2
     square: false
@@ -311,21 +332,9 @@ cards:
         entity: sensor.poolmaster_chl_pump_uptime
         primary: Conso. Chlore
         secondary: >
-          {% set temps_sec = states('sensor.poolmaster_chl_pump_uptime') |
-          float(0) %}
-
-          {# Attention: Vérifie si le nom de l'entité a changé après ta modif de
-          code #}
-
-          {% set debit_lh = states('number.poolmaster_chl_pump_flow_rate_l_s') |
-          float(0) %}
-
-
-          {# Calcul : (Secondes / 3600) * L/h = Litres #}
-
+          {% set temps_sec = states('sensor.poolmaster_chl_pump_uptime') | float(0) %}
+          {% set debit_lh = states('number.poolmaster_chl_pump_flow_rate_l_s') | float(0) %}
           {% set volume_l = (temps_sec / 3600) * debit_lh %}
-
-
           {% if volume_l < 1 %}
              {{ (volume_l * 1000) | round(0) }} mL
           {% else %}
@@ -339,22 +348,14 @@ cards:
         card_mod:
           style: |
             ha-card { background: none; box-shadow: none; }
+            
       - type: custom:mushroom-template-card
         entity: sensor.poolmaster_ph_pump_uptime
         primary: Conso. pH
         secondary: >
-          {% set temps_sec = states('sensor.poolmaster_ph_pump_uptime') |
-          float(0) %}
-
-          {% set debit_lh = states('number.poolmaster_ph_pump_flow_rate_l_s') |
-          float(0) %}
-
-
-          {# Calcul : (Secondes / 3600) * L/h = Litres #}
-
+          {% set temps_sec = states('sensor.poolmaster_ph_pump_uptime') | float(0) %}
+          {% set debit_lh = states('number.poolmaster_ph_pump_flow_rate_l_s') | float(0) %}
           {% set volume_l = (temps_sec / 3600) * debit_lh %}
-
-
           {% if volume_l < 1 %}
              {{ (volume_l * 1000) | round(0) }} mL
           {% else %}
@@ -368,6 +369,7 @@ cards:
         card_mod:
           style: |
             ha-card { background: none; box-shadow: none; }
+
   - type: grid
     columns: 2
     square: false
@@ -386,6 +388,10 @@ cards:
         icon_color: blue
         primary_info: name
         secondary_info: state
+
+  # =================================================
+  # ZONE 6 : ALERTES DE SÉCURITÉ (Conditionnelles)
+  # =================================================
   - type: vertical-stack
     cards:
       - type: conditional
@@ -457,6 +463,10 @@ cards:
           icon: mdi:waves
           icon_color: red
           layout: horizontal
+
+  # =================================================
+  # ZONE 7 : MENU RÉGLAGES AVANCÉS
+  # =================================================
   - type: custom:mushroom-entity-card
     entity: input_boolean.mode_admin_piscine
     name: Réglages Avancés
@@ -468,13 +478,11 @@ cards:
     card_mod:
       style: >
         ha-card { background: none; border: none; box-shadow: none; }
-
         ha-card[class*='active'] mushroom-shape-icon {
             animation: rotation 2s linear infinite;
         }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform:
-        rotate(360deg); } }
   - type: conditional
     conditions:
       - entity: input_boolean.mode_admin_piscine
@@ -482,11 +490,20 @@ cards:
     card:
       type: vertical-stack
       cards:
+        # --- MASTER SWITCH & NAVIGATION ---
         - type: entities
           entities:
+            - type: section
+              label: Configuration Globale
+            - entity: switch.poolmaster_winter_mode
+              name: Mode Hivernage (Désactive Filtr. & Chimie)
+              icon: mdi:snowflake-alert
+            - type: section
             - entity: input_select.poolmaster_menu_tabs
               name: Choisir la section
               icon: mdi:menu
+              
+        # --- ONGLET 1 : CHIMIE ---
         - type: conditional
           conditions:
             - entity: input_select.poolmaster_menu_tabs
@@ -530,6 +547,8 @@ cards:
               - entity: button.poolmaster_reset_orp_probe_calibration
                 name: Reset Calibration ORP
                 icon: mdi:restore
+                
+        # --- ONGLET 2 : FILTRATION ---
         - type: conditional
           conditions:
             - entity: input_select.poolmaster_menu_tabs
@@ -538,12 +557,9 @@ cards:
             type: entities
             entities:
               - type: section
-                label: Paramètres
-              - entity: switch.poolmaster_winter_mode
-                name: Mode Hivernage
-                icon: mdi:snowflake-alert
-              - type: section
                 label: Horaires (Entités introuvables)
+                
+        # --- ONGLET 3 : EAU ---
         - type: conditional
           conditions:
             - entity: input_select.poolmaster_menu_tabs
@@ -570,6 +586,8 @@ cards:
               - entity: button.poolmaster_reset_pressure_probe_calibration
                 name: Calibrer Pression (Zéro)
                 icon: mdi:scale-balance
+                
+        # --- ONGLET 4 : SYSTEME ---
         - type: conditional
           conditions:
             - entity: input_select.poolmaster_menu_tabs
@@ -591,9 +609,7 @@ cards:
                   hui-generic-entity-row:
                     $: >
                       state-badge { display: none; }
-
-                      .text-content { font-weight: bold; color:
-                      var(--primary-color); }
+                      .text-content { font-weight: bold; color: var(--primary-color); }
               - type: section
                 label: Redémarrage
               - entity: button.poolmaster_reboot_poolmaster
