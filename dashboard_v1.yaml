@@ -1,0 +1,604 @@
+type: vertical-stack
+cards:
+  - type: custom:mushroom-title-card
+    title: PoolMaster
+    alignment: center
+  - type: horizontal-stack
+    cards:
+      - type: gauge
+        entity: sensor.poolmaster_ph_sensor
+        name: pH
+        min: 6
+        max: 8.4
+        needle: true
+        segments:
+          - from: 0
+            color: "#db4437"
+          - from: 6.8
+            color: "#ffa600"
+          - from: 7
+            color: "#43a047"
+          - from: 7.4
+            color: "#ffa600"
+          - from: 7.6
+            color: "#db4437"
+      - type: gauge
+        entity: sensor.poolmaster_orp_redox_sensor
+        name: Orp
+        unit: mV
+        min: 420
+        max: 1020
+        needle: true
+        segments:
+          - from: 0
+            color: "#db4437"
+          - from: 650
+            color: "#ffa600"
+          - from: 700
+            color: "#43a047"
+          - from: 740
+            color: "#ffa600"
+          - from: 790
+            color: "#db4437"
+  - type: grid
+    columns: 4
+    square: false
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: switch.poolmaster_filtration
+        name: Filtr.
+        layout: vertical
+        icon: mdi:pump
+        tap_action:
+          action: toggle
+        card_mod:
+          style: |
+            ha-card { background: none; box-shadow: none; border: none; }
+      - type: custom:mushroom-entity-card
+        entity: switch.poolmaster_robot
+        name: Robot
+        layout: vertical
+        icon: mdi:robot-vacuum
+        tap_action:
+          action: toggle
+        card_mod:
+          style: |
+            ha-card { background: none; box-shadow: none; border: none; }
+      - type: custom:mushroom-entity-card
+        entity: switch.poolmaster_relay_0_lights
+        name: Eclair.
+        layout: vertical
+        icon: mdi:lightbulb
+        tap_action:
+          action: toggle
+        card_mod:
+          style: |
+            ha-card { background: none; box-shadow: none; border: none; }
+      - type: custom:mushroom-entity-card
+        entity: switch.poolmaster_relay_1
+        name: Aux.
+        layout: vertical
+        icon: mdi:power-plug
+        tap_action:
+          action: toggle
+        card_mod:
+          style: |
+            ha-card { background: none; box-shadow: none; border: none; }
+  - type: custom:mushroom-template-card
+    entity: switch.poolmaster_filtration_mode_auto_manual
+    primary: Mode Filtration
+    secondary: |
+      {% if is_state(entity, 'on') %}
+        Auto
+      {% else %}
+        Manuel
+      {% endif %}
+    icon: |
+      {% if is_state(entity, 'on') %}
+        mdi:autorenew
+      {% else %}
+        mdi:hand-back-right
+      {% endif %}
+    tap_action:
+      action: toggle
+    color: |
+      {% if is_state(entity, 'on') %}
+        green
+      {% else %}
+        orange
+      {% endif %}
+    vertical: true
+    features_position: bottom
+  - type: grid
+    columns: 4
+    square: false
+    cards:
+      - type: custom:mushroom-template-card
+        entity: switch.poolmaster_orp_pid
+        primary: Reg. ORP
+        secondary: |
+          {% if is_state('switch.poolmaster_orp_pid', 'off') %}
+            Arrêt
+          {% elif is_state('switch.poolmaster_orp_auto_mode', 'off') %}
+            Veille
+          {% else %}
+            Auto
+          {% endif %}
+        layout: vertical
+        icon: mdi:chart-bell-curve-cumulative
+        icon_color: |
+          {% if is_state('switch.poolmaster_orp_pid', 'off') %}
+            red
+          {% elif is_state('switch.poolmaster_orp_auto_mode', 'off') %}
+            orange
+          {% else %}
+            green
+          {% endif %}
+        badge_icon: >
+          {% if is_state('switch.poolmaster_orp_pid', 'on') and
+          is_state('switch.poolmaster_orp_auto_mode', 'off') %}
+            mdi:lock
+          {% endif %}
+        badge_color: orange
+        tap_action:
+          action: none
+        icon_tap_action:
+          action: none
+        hold_action:
+          action: none
+        card_mod:
+          style: >
+            ha-card { background: none; border: none; box-shadow: none; cursor:
+            default; }
+      - type: custom:mushroom-template-card
+        entity: switch.poolmaster_chl_pump
+        primary: Inj. Chl
+        secondary: "{{ 'On' if is_state(entity, 'on') else 'Off' }}"
+        layout: vertical
+        icon: mdi:pump
+        icon_color: "{{ 'amber' if is_state(entity, 'on') else 'disabled' }}"
+        tap_action:
+          action: none
+        icon_tap_action:
+          action: none
+        hold_action:
+          action: none
+        card_mod:
+          style: >
+            ha-card { background: none; border: none; box-shadow: none; cursor:
+            default; }
+
+            mushroom-shape-icon {
+              {{ 'animation: spin 2s linear infinite;' if is_state(config.entity, 'on') }}
+            }
+
+            @keyframes spin {
+              100% { transform: rotate(360deg); }
+            }
+      - type: custom:mushroom-template-card
+        entity: switch.poolmaster_ph_pid
+        primary: Reg. pH
+        secondary: |
+          {% if is_state('switch.poolmaster_ph_pid', 'off') %}
+            Arrêt
+          {% elif is_state('switch.poolmaster_ph_auto_mode', 'off') %}
+            Veille
+          {% else %}
+            Auto
+          {% endif %}
+        layout: vertical
+        icon: mdi:chart-bell-curve-cumulative
+        icon_color: |
+          {% if is_state('switch.poolmaster_ph_pid', 'off') %}
+            red
+          {% elif is_state('switch.poolmaster_ph_auto_mode', 'off') %}
+            orange
+          {% else %}
+            green
+          {% endif %}
+        badge_icon: >
+          {% if is_state('switch.poolmaster_ph_pid', 'on') and
+          is_state('switch.poolmaster_ph_auto_mode', 'off') %}
+            mdi:lock
+          {% endif %}
+        badge_color: orange
+        tap_action:
+          action: none
+        icon_tap_action:
+          action: none
+        hold_action:
+          action: none
+        card_mod:
+          style: >
+            ha-card { background: none; border: none; box-shadow: none; cursor:
+            default; }
+      - type: custom:mushroom-template-card
+        entity: switch.poolmaster_ph_pump
+        primary: Inj. pH
+        secondary: "{{ 'On' if is_state(entity, 'on') else 'Off' }}"
+        layout: vertical
+        icon: mdi:pump
+        icon_color: "{{ 'blue' if is_state(entity, 'on') else 'disabled' }}"
+        tap_action:
+          action: none
+        icon_tap_action:
+          action: none
+        hold_action:
+          action: none
+        card_mod:
+          style: >
+            ha-card { background: none; border: none; box-shadow: none; cursor:
+            default; }
+
+            mushroom-shape-icon {
+              {{ 'animation: spin 2s linear infinite;' if is_state(config.entity, 'on') }}
+            }
+
+            @keyframes spin {
+              100% { transform: rotate(360deg); }
+            }
+  - type: custom:mini-graph-card
+    name: Températures
+    hours_to_show: 6
+    points_per_hour: 2
+    smoothing: true
+    line_width: 2
+    show:
+      labels: true
+      legend: false
+    lower_bound_secondary: 0
+    upper_bound_secondary: 1
+    card_mod:
+      style: |
+        ha-card .states { justify-content: space-between !important; }
+        ha-card .states > div:nth-child(1) { color: #ff9800 !important; }
+        ha-card .states > div:nth-child(2) { color: #2196f3 !important; }
+    entities:
+      - entity: sensor.poolmaster_air_temperature
+        name: Air
+        color: "#ff9800"
+        show_state: true
+      - entity: sensor.poolmaster_water_temperature
+        name: Eau
+        color: "#2196f3"
+        show_state: true
+  - type: custom:mini-graph-card
+    name: Chimie
+    hours_to_show: 6
+    points_per_hour: 2
+    smoothing: true
+    line_width: 2
+    show:
+      labels: true
+      legend: false
+    card_mod:
+      style: |
+        ha-card .states { justify-content: space-between !important; }
+        ha-card .states > div:nth-child(1) { color: #fdd835 !important; }
+        ha-card .states > div:nth-child(2) { color: #2196f3 !important; }
+    entities:
+      - entity: sensor.poolmaster_ph_sensor
+        name: pH
+        color: "#fdd835"
+        show_state: true
+      - entity: sensor.poolmaster_orp_redox_sensor
+        name: Orp
+        color: "#2196f3"
+        show_state: true
+        y_axis: secondary
+  - type: history-graph
+    hours_to_show: 6
+    entities:
+      - entity: switch.poolmaster_ph_pump
+        name: pH
+      - entity: switch.poolmaster_chl_pump
+        name: Chl
+    card_mod:
+      style: |
+        ha-card { 
+          border-top-left-radius: 0px; 
+          border-top-right-radius: 0px; 
+          margin-top: 0px !important; 
+          box-shadow: none;
+        }
+        .card-header { display: none !important; }
+        .content { padding-top: 5px !important; }
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mushroom-template-card
+        entity: sensor.poolmaster_chl_pump_uptime
+        primary: Conso. Chlore
+        secondary: >
+          {% set temps_sec = states('sensor.poolmaster_chl_pump_uptime') |
+          float(0) %}
+
+          {# Attention: Vérifie si le nom de l'entité a changé après ta modif de
+          code #}
+
+          {% set debit_lh = states('number.poolmaster_chl_pump_flow_rate_l_s') |
+          float(0) %}
+
+
+          {# Calcul : (Secondes / 3600) * L/h = Litres #}
+
+          {% set volume_l = (temps_sec / 3600) * debit_lh %}
+
+
+          {% if volume_l < 1 %}
+             {{ (volume_l * 1000) | round(0) }} mL
+          {% else %}
+             {{ volume_l | round(2) }} L
+          {% endif %}
+        icon: mdi:beaker
+        icon_color: teal
+        layout: vertical
+        tap_action:
+          action: more-info
+        card_mod:
+          style: |
+            ha-card { background: none; box-shadow: none; }
+      - type: custom:mushroom-template-card
+        entity: sensor.poolmaster_ph_pump_uptime
+        primary: Conso. pH
+        secondary: >
+          {% set temps_sec = states('sensor.poolmaster_ph_pump_uptime') |
+          float(0) %}
+
+          {% set debit_lh = states('number.poolmaster_ph_pump_flow_rate_l_s') |
+          float(0) %}
+
+
+          {# Calcul : (Secondes / 3600) * L/h = Litres #}
+
+          {% set volume_l = (temps_sec / 3600) * debit_lh %}
+
+
+          {% if volume_l < 1 %}
+             {{ (volume_l * 1000) | round(0) }} mL
+          {% else %}
+             {{ volume_l | round(2) }} L
+          {% endif %}
+        icon: mdi:flask-outline
+        icon_color: blue
+        layout: vertical
+        tap_action:
+          action: more-info
+        card_mod:
+          style: |
+            ha-card { background: none; box-shadow: none; }
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.poolmaster_chl_tank_level
+        name: Niv. Chlore
+        icon: mdi:beaker-outline
+        icon_color: teal
+        primary_info: name
+        secondary_info: state
+      - type: custom:mushroom-entity-card
+        entity: sensor.poolmaster_ph_tank_level
+        name: Niv. pH
+        icon: mdi:flask-empty-outline
+        icon_color: blue
+        primary_info: name
+        secondary_info: state
+  - type: vertical-stack
+    cards:
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.poolmaster_psi_status
+            state: "on"
+        card:
+          type: custom:mushroom-template-card
+          primary: Alerte Pression !
+          secondary: Nettoyer le filtre
+          icon: mdi:gauge
+          icon_color: red
+          layout: horizontal
+          tap_action:
+            action: more-info
+            entity: sensor.poolmaster_pump_pressure
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.poolmaster_ph_level_status
+            state: "on"
+        card:
+          type: custom:mushroom-template-card
+          primary: Bidon pH vide
+          secondary: Remplacer le bidon
+          icon: mdi:flask-empty-off
+          icon_color: red
+          layout: horizontal
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.poolmaster_chl_level_status
+            state: "on"
+        card:
+          type: custom:mushroom-template-card
+          primary: Bidon Chlore vide
+          secondary: Remplacer le bidon
+          icon: mdi:beaker-alert
+          icon_color: red
+          layout: horizontal
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.poolmaster_ph_uptime_status
+            state: "on"
+        card:
+          type: custom:mushroom-template-card
+          primary: Sécurité Pompe pH
+          secondary: Arrêt auto (Temps max)
+          icon: mdi:alarm-light
+          icon_color: red
+          layout: horizontal
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.poolmaster_chl_uptime_status
+            state: "on"
+        card:
+          type: custom:mushroom-template-card
+          primary: Sécurité Pompe Chlore
+          secondary: Arrêt auto (Temps max)
+          icon: mdi:alarm-light
+          icon_color: red
+          layout: horizontal
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.poolmaster_water_level_status
+            state: "on"
+        card:
+          type: custom:mushroom-template-card
+          primary: Niveau d'eau incorrect
+          secondary: Vérifier skimmer
+          icon: mdi:waves
+          icon_color: red
+          layout: horizontal
+  - type: custom:mushroom-entity-card
+    entity: input_boolean.mode_admin_piscine
+    name: Réglages Avancés
+    icon: mdi:cog
+    tap_action:
+      action: toggle
+    primary_info: name
+    secondary_info: none
+    card_mod:
+      style: >
+        ha-card { background: none; border: none; box-shadow: none; }
+
+        ha-card[class*='active'] mushroom-shape-icon {
+            animation: rotation 2s linear infinite;
+        }
+
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform:
+        rotate(360deg); } }
+  - type: conditional
+    conditions:
+      - entity: input_boolean.mode_admin_piscine
+        state: "on"
+    card:
+      type: vertical-stack
+      cards:
+        - type: entities
+          entities:
+            - entity: input_select.poolmaster_menu_tabs
+              name: Choisir la section
+              icon: mdi:menu
+        - type: conditional
+          conditions:
+            - entity: input_select.poolmaster_menu_tabs
+              state: Chimie
+          card:
+            type: entities
+            entities:
+              - type: section
+                label: Régulation pH
+              - entity: switch.poolmaster_ph_pid
+                name: Régulation PID pH (ON/OFF)
+                icon: mdi:power
+              - entity: switch.poolmaster_ph_auto_mode
+                name: Mode Auto pH
+                icon: mdi:refresh-auto
+              - entity: number.poolmaster_ph_pump_uptime_limit_mn
+                name: Sécurité Temps Max (min)
+                icon: mdi:timer-alert-outline
+              - type: section
+                label: Régulation Chlore (ORP)
+              - entity: switch.poolmaster_orp_pid
+                name: Régulation PID ORP (ON/OFF)
+                icon: mdi:power
+              - entity: switch.poolmaster_orp_auto_mode
+                name: Mode Auto Chlore
+                icon: mdi:refresh-auto
+              - entity: number.poolmaster_chlorine_pump_uptime_limit_mn
+                name: Sécurité Temps Max (min)
+                icon: mdi:timer-alert-outline
+              - type: section
+                label: Maintenance Manuelle
+              - entity: switch.poolmaster_ph_pump
+                name: Forcer Pompe pH
+                icon: mdi:water-plus
+              - entity: switch.poolmaster_chl_pump
+                name: Forcer Pompe Chlore
+                icon: mdi:bottle-tonic-plus
+              - entity: button.poolmaster_reset_ph_probe_calibration
+                name: Reset Calibration pH
+                icon: mdi:restore
+              - entity: button.poolmaster_reset_orp_probe_calibration
+                name: Reset Calibration ORP
+                icon: mdi:restore
+        - type: conditional
+          conditions:
+            - entity: input_select.poolmaster_menu_tabs
+              state: Filtration
+          card:
+            type: entities
+            entities:
+              - type: section
+                label: Paramètres
+              - entity: switch.poolmaster_winter_mode
+                name: Mode Hivernage
+                icon: mdi:snowflake-alert
+              - type: section
+                label: Horaires (Entités introuvables)
+        - type: conditional
+          conditions:
+            - entity: input_select.poolmaster_menu_tabs
+              state: Eau
+          card:
+            type: entities
+            entities:
+              - type: section
+                label: Température & Remplissage
+              - entity: number.poolmaster_water_temperature_set_point
+                name: Température Cible
+                icon: mdi:thermometer-water
+              - entity: switch.poolmaster_pool_fill_pump
+                name: Pompe Remplissage (Force)
+                icon: mdi:waves-arrow-up
+              - entity: number.poolmaster_pool_fill_pump_max_uptime_mn
+                name: Temps Max Remplissage (min)
+              - type: section
+                label: Pression (PSI)
+              - entity: number.poolmaster_psi_high_threshold
+                name: Seuil Alerte HAUT
+              - entity: number.poolmaster_psi_low_threshold
+                name: Seuil Alerte BAS
+              - entity: button.poolmaster_reset_pressure_probe_calibration
+                name: Calibrer Pression (Zéro)
+                icon: mdi:scale-balance
+        - type: conditional
+          conditions:
+            - entity: input_select.poolmaster_menu_tabs
+              state: Systeme
+          card:
+            type: entities
+            entities:
+              - type: section
+                label: Maintenance & Erreurs
+              - entity: button.poolmaster_clear_errors
+                name: Acquitter / Effacer les Erreurs
+                icon: mdi:alert-remove-outline
+              - type: section
+                label: Actions Système
+              - entity: button.poolmaster_publish_settings
+                name: Sauvegarder Config (Flash)
+                icon: mdi:content-save
+                style:
+                  hui-generic-entity-row:
+                    $: >
+                      state-badge { display: none; }
+
+                      .text-content { font-weight: bold; color:
+                      var(--primary-color); }
+              - type: section
+                label: Redémarrage
+              - entity: button.poolmaster_reboot_poolmaster
+                name: Reboot PoolMaster
+                icon: mdi:restart
+              - entity: button.poolmaster_reboot_supervisor
+                name: Reboot Supervisor
+                icon: mdi:server-network
