@@ -23,3 +23,9 @@ Les fonctionnalités clés :
   * L'affichage du fonctionnement des pompes n'est pas "sur" le graph mais en dessous. Je n'ai pas encore trouvé comment faire.
   * Je n'ai pas implémenté l'électrolyseur.
   * A vous de me dire ?
+
+<img width="516" height="1366" alt="Capture d&#39;écran 2026-02-18 225453" src="https://github.com/user-attachments/assets/c474dbdb-9b0e-4166-bcd8-a7fff4b514a0" />
+<img width="519" height="622" alt="Capture d&#39;écran 2026-02-18 225521" src="https://github.com/user-attachments/assets/ad6b5e25-e8ab-4849-aa8f-baf2145f77fe" />
+<img width="521" height="900" alt="Capture d&#39;écran 2026-02-18 225506" src="https://github.com/user-attachments/assets/a52d9a0c-af7e-48f2-9d10-91bfc4be291e" />
+<img width="524" height="371" alt="Capture d&#39;écran 2026-02-18 225514" src="https://github.com/user-attachments/assets/250b9a69-3860-4c26-8e88-bfc9a14bce55" />
+<img width="520" height="575" alt="Capture d&#39;écran 2026-02-18 225529" src="https://github.com/user-attachments/assets/bb3c8eff-ab97-42ec-a3ca-696aa41394f4" />
