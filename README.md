@@ -18,6 +18,9 @@ Les fonctionnalités clés :
   * Mini Graph Card (pour les courbes).
   * Card Mod (indispensable pour les animations des pompes et le style CSS avancé).
 
+# Utilisation: Dans un dashboard HA
+Copiez le code YAML complet dans une vue en mode "panneau" ou "vertical-stack". C'est tout !
+
     Problèmes connus:
   * Le % restant de produits affiche des valeurs abérentes
   * L'affichage du fonctionnement des pompes n'est pas "sur" le graph mais en dessous. Je n'ai pas encore trouvé comment faire.
